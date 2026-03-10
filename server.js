@@ -1,23 +1,23 @@
-const express=require('express');
-const mongodb=require('./database/db')
+const express = require('express');
+const mongodb = require('./database/db');
 
-const app=express();
+const app = express();
 
-app.use('/',require('./routes'))
+// Middleware
+app.use(express.json());
 
-const PORT=process.env.PORT || 3000
+// Routes
+app.use('/', require('./routes'));
 
-//Call initDb function
-mongodb.initDb((err)=>{
-   if(err) {
-       console.log(`The error is ${err.message}`)
-     }
-     else
-        {
-           app.listen(PORT,()=>{
-          console.log(`Listenig to port ${PORT}...`)
-        })
+const PORT = process.env.PORT || 3000;
+
+// Call initDb function
+mongodb.initDb((err) => {
+    if (err) {
+        console.error('Database connection error:', err);
+    } else {
+        app.listen(PORT, () => {
+            console.log(`Listening to port ${PORT}...`);
+        });
     }
-    
-})
-
+});

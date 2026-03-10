@@ -1,11 +1,11 @@
 const router=require('express').Router();
 
-const contactControllers=require('../controllers/contacts');
+const contactControllers=require('../controllers/contacts')
 
 //route to get all contacts
-router.get('/',contactControllers.getAll)
+router.get('/',contactControllers.getAllContacts)
 
-//route to get single contact
-router.get('/:id',contactControllers.getSingle)
+//route to get single contacts
+router.get('/:id',contactControllers.getSingleContact)
 
-module.exports=router;
+module.exports=router

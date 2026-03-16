@@ -1,32 +1,122 @@
-const mongodb=require('../database/db');
-const objectId=require('mongodb').ObjectId;//primary key 
+const mongodb = require('../database/db');
+const objectId = require('mongodb').ObjectId; // primary key 
 
+//function to get all contacts
+const getAllContacts = async (req, res) => {
+    try {
+        const allContacts = await mongodb
+            .getDatabase()
+            .db()
+            .collection('contacts')
+            .find()
+            .toArray();
 
-const getAllContacts=async(req,res)=>{
-    const allContacts= await mongodb
-             .getDatabase()
-             .db()
-             .collection('contacts')
-             .find();
-         allContacts.toArray().then((contacts)=>{
-            res.setHeader('Content-Type','application/json')
-            res.status(200).json(contacts)
-         })
-}
-const getSingleContact=async(req,res)=>{
-    const id=new  objectId(req.params.id)
-    const allContacts= await mongodb
-             .getDatabase()
-             .db()
-             .collection('contacts')
-             .find({_id:id});
-         allContacts.toArray().then((contacts)=>{
-            res.setHeader('Content-Type','application/json')
-            res.status(200).json(contacts[0])
-         })
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(allContacts);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
 }
 
-module.exports={
+//function to get a single contact
+const getSingleContact = async (req, res) => {
+    try {
+        const id = new objectId(req.params.id);
+
+        const contact = await mongodb
+            .getDatabase()
+            .db()
+            .collection('contacts')
+            .findOne({ _id: id });
+
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(contact);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+//function to create contact
+const createContact = async (req, res) => {
+    try {
+        const contact = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            favoriteColor: req.body.favoriteColor,
+            birthday: req.body.birthday
+        };
+
+        const resp = await mongodb
+            .getDatabase()
+            .db()
+            .collection('contacts')
+            .insertOne(contact);
+
+        if (resp.acknowledged) {
+            res.status(201).json(resp.insertedId);
+        } else {
+            res.status(500).json(resp.error || 'Some error happened when inserting new contact');
+        }
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
+
+//function to update contact
+const updateContact = async (req, res) => {
+    try {
+        const id = new objectId(req.params.id);
+
+        const updatedContact = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            favoriteColor: req.body.favoriteColor,
+            birthday: req.body.birthday
+        };
+
+        const resp = await mongodb
+            .getDatabase()
+            .db()
+            .collection('contacts')
+            .replaceOne({ _id: id }, updatedContact);
+
+        if (resp.modifiedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(resp.error || 'Some error occured while updating contact');
+        }
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+//function to delete an account
+const deleteContact = async (req, res) => {
+    try {
+        const id = new objectId(req.params.id);
+
+        const resp = await mongodb
+            .getDatabase()
+            .db()
+            .collection('contacts')
+            .deleteOne({ _id: id });
+
+        if (resp.deletedCount > 0) {
+            res.status(204).send();
+        } else {
+            res.status(500).json(resp.error || 'Some error occured while deleting contact');
+        }
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
+
+module.exports = {
     getAllContacts,
-    getSingleContact
-}
+    getSingleContact,
+    createContact,
+    updateContact,
+    deleteContact
+};

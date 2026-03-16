@@ -1,10 +1,15 @@
 const express = require('express');
 const mongodb = require('./database/db');
+const body_parser=require('body-parser');
+
 
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(body_parser.json());
+app.use(body_parser.urlencoded({ extended: true }));
+
 
 // Routes
 app.use('/', require('./routes'));

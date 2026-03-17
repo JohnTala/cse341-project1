@@ -9,7 +9,7 @@
   "host":"cse341-project1-1-4omy.onrender.com/",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
     
   ],
   "paths": {

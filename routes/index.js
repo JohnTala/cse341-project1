@@ -1,9 +1,12 @@
-const router=require('express').Router();
+const router = require('express').Router();
 
-router.get('/',(req,res)=>{
-    //#swagger.tags=['Hello word and people']
-    res.send("Hello world and people")
-})
+// Root endpoint
+router.get('/', (req, res) => {
+    //#swagger.tags = ['Root']
+    res.send("Hello world and people");
+});
 
-router.use('/contacts',require('./contacts'))
-module.exports=router
+// Mount contacts router
+router.use('/contacts', require('./contacts'));
+
+module.exports = router;

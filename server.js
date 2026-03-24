@@ -1,10 +1,10 @@
 const express = require('express');
-const mongodb = require('./database/db');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+const mongodb = require('./database/db');
 
-//  Catch sync errors first
+// Catch sync errors
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION ', err);
   process.exit(1);
@@ -14,19 +14,19 @@ const app = express();
 
 // Middleware
 app.use(cors());
+app.options('*', cors()); // Preflight for PUT/POST/DELETE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Swagger
+// Routes
+app.use('/contacts', require('./routes/contacts')); // Mount contacts router
+
+// Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Routes
-app.use('/', require('./routes'));
-
-//  Express error handler
+// Global error handler
 app.use((err, req, res, next) => {
   console.error('ERROR ', err);
-
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Server Error'
@@ -48,10 +48,7 @@ mongodb.initDb((err) => {
     // Handle async errors
     process.on('unhandledRejection', (err) => {
       console.error('UNHANDLED REJECTION ', err);
-
-      server.close(() => {
-        process.exit(1);
-      });
+      server.close(() => process.exit(1));
     });
   }
 });

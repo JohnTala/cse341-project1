@@ -1,42 +1,30 @@
-const router=require('express').Router();
-const {body}=require('express-validator');
+const router = require('express').Router();
+const { body, validationResult } = require('express-validator');
+const contactControllers = require('../controllers/contacts');
 
-const contactControllers=require('../controllers/contacts')
+// Validation middleware
+const contactValidator = [
+  body('firstName').notEmpty().withMessage('First Name is required'),
+  body('lastName').notEmpty().withMessage('Last Name is required'),
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('favoriteColor').notEmpty().withMessage('Favorite Color is required'),
+  body('birthday').notEmpty().withMessage('Birthday is required')
+];
 
-const contactValidator=[
-    body('firstName')
-                .notEmpty()
-                .withMessage('First Name is required,can not be empty'),
-    body('lastName')
-                .notEmpty()
-                .withMessage('Last Name is required,can not be empty'),
-    body('email')
-                .isEmail()
-                .withMessage('Valid email is required'),
-    body('favoriteColor')
-                .notEmpty()
-                .withMessage('Color is required,can not be empty'),
-    body('birthday')
-                 .notEmpty()
-                 .withMessage('birthday is required')
-    
-]
+// Validation error handler
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  next();
+};
 
+// Routes
+router.get('/', contactControllers.getAllContacts);
+router.get('/:id', contactControllers.getSingleContact);
+router.post('/', contactValidator, handleValidationErrors, contactControllers.createContact);
+router.put('/:id', contactValidator, handleValidationErrors, contactControllers.updateContact);
+router.delete('/:id', contactControllers.deleteContact);
 
-//route to get all contacts
-router.get('/',contactControllers.getAllContacts)
-
-//route to get single contacts
-router.get('/:id',contactControllers.getSingleContact)
-
-//route to create contact
-router.post('/',contactValidator,contactControllers.createContact)
-
-//route to update contact
-router.put('/:id',contactValidator,contactControllers.updateContact)
-
-//route to delete contact
-
-router.delete('/:id',contactControllers.deleteContact)
-
-module.exports=router;
+module.exports = router;

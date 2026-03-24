@@ -2,14 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-const db = require('./database/db'); 
+const db = require('./database/db'); // ✅ MongoDB init
 
 const app = express();
 
 // --------------------
 // Middleware
 // --------------------
-app.use(cors());
+app.use(cors());           // Enable CORS
+app.options('*', cors());  // Preflight support for PUT/POST/DELETE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

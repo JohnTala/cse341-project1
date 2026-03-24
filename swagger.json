@@ -9,16 +9,6 @@
   "basePath": "/",
   "schemes": ["https"],
   "paths": {
-    "/": {
-      "get": {
-        "tags": ["Root"],
-        "description": "Root endpoint",
-        "responses": {
-          "200": { "description": "OK" },
-          "500": { "description": "Internal Server Error" }
-        }
-      }
-    },
     "/contacts": {
       "get": {
         "tags": ["Contacts"],
@@ -59,20 +49,11 @@
     "/contacts/{id}": {
       "get": {
         "tags": ["Contacts"],
-        "description": "Get a single contact by ID",
-        "produces": ["application/json"],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "parameters": [{ "name": "id", "in": "path", "required": true, "type": "string" }],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" }, "500": { "description": "Internal Server Error" } }
       },
       "put": {
         "tags": ["Contacts"],
-        "description": "Update a contact by ID",
         "parameters": [
           { "name": "id", "in": "path", "required": true, "type": "string" },
           {
@@ -91,24 +72,12 @@
             }
           }
         ],
-        "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "responses": { "200": { "description": "OK" }, "400": { "description": "Bad Request" }, "404": { "description": "Not Found" }, "500": { "description": "Internal Server Error" } }
       },
       "delete": {
         "tags": ["Contacts"],
-        "description": "Delete a contact by ID",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "200": { "description": "Deleted" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "parameters": [{ "name": "id", "in": "path", "required": true, "type": "string" }],
+        "responses": { "200": { "description": "Deleted" }, "404": { "description": "Not Found" }, "500": { "description": "Internal Server Error" } }
       }
     }
   }

@@ -1,5 +1,6 @@
 const mongodb = require('../database/db');
 const objectId = require('mongodb').ObjectId; // primary key 
+const {validationResult}=require('express-validator')
 
 //function to get all contacts
 const getAllContacts = async (req, res) => {
@@ -41,6 +42,11 @@ const getSingleContact = async (req, res) => {
 //function to create contact
 const createContact = async (req, res) => {
      //##swagger.tags=['Contacts']
+
+     const errors=validationResult(req)
+     if(!errors.isEmpty()){
+        return res.status(400).json({errors:errors.array()})
+     }
     try {
         const contact = {
             firstName: req.body.firstName,

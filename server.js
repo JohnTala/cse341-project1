@@ -2,53 +2,72 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-const mongodb = require('./database/db');
-
-// Catch sync errors
-process.on('uncaughtException', (err) => {
-  console.error('UNCAUGHT EXCEPTION ', err);
-  process.exit(1);
-});
+const db = require('./database/db'); 
 
 const app = express();
 
+// --------------------
 // Middleware
+// --------------------
 app.use(cors());
-app.options('*', cors()); // Preflight for PUT/POST/DELETE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/contacts', require('./routes/contacts')); // Mount contacts router
-
-// Swagger UI
+// --------------------
+// Swagger route FIRST
+// --------------------
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// --------------------
+// Root route
+// --------------------
+app.get('/', (req, res) => {
+  res.send('Hello world and people');
+});
+
+// --------------------
+// Normal routes
+// --------------------
+app.use('/contacts', require('./routes/contacts'));
+
+// --------------------
 // Global error handler
+// --------------------
 app.use((err, req, res, next) => {
-  console.error('ERROR ', err);
+  console.error('ERROR:', err.stack || err);
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Server Error'
   });
 });
 
-const PORT = process.env.PORT || 3000;
+// --------------------
+// Catch unhandled promise rejections
+// --------------------
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION at:', promise, 'reason:', reason);
+});
 
-// Start server AFTER DB connects
-mongodb.initDb((err) => {
+// --------------------
+// Catch uncaught exceptions
+// --------------------
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err.stack || err);
+  process.exit(1); // exit safely
+});
+
+// --------------------
+// Connect to MongoDB & start server
+// --------------------
+db.initDb((err) => {
   if (err) {
-    console.error('Database connection error:', err);
+    console.error('Cannot connect to the database!', err);
     process.exit(1);
   } else {
-    const server = app.listen(PORT, () => {
-      console.log(`Listening on port ${PORT}...`);
-    });
-
-    // Handle async errors
-    process.on('unhandledRejection', (err) => {
-      console.error('UNHANDLED REJECTION ', err);
-      server.close(() => process.exit(1));
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}.`);
     });
   }
 });

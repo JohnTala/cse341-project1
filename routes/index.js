@@ -6,7 +6,4 @@ router.get('/', (req, res) => {
     res.send("Hello world and people");
 });
 
-// Mount contacts router
-router.use('/contacts', require('./contacts'));
-
 module.exports = router;

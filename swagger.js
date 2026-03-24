@@ -3,26 +3,13 @@ const swaggerAutogen = require('swagger-autogen')();
 const doc = {
   info: {
     title: 'Contacts API',
-    description: 'API documentation for the Contacts project',
-    version: '1.0.0'
+    description: 'API documentation for the Contacts project'
   },
-  host: process.env.SWAGGER_HOST || '', // Dynamic host works locally & on Render
-  basePath: '/',
-  schemes: ['https', 'http'],
-  consumes: ['application/json'],
-  produces: ['application/json']
+  host: 'localhost:8080',
+  schemes: ['http']
 };
 
-// Output file
 const outputFile = './swagger.json';
+const endpointsFiles = ['./routes/contacts.js','./routes/index.js'];
 
-// Include all route files
-const endpointsFiles = [
-  './routes/index.js',
-  './routes/contacts.js'
-];
-
-// Generate swagger.json
-swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-  console.log('Contacts Swagger documentation generated successfully!');
-});
+swaggerAutogen(outputFile, endpointsFiles, doc);

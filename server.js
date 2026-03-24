@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-const db = require('./database/db'); // ✅ MongoDB init
+const db = require('./database/db'); //  MongoDB init
 
 const app = express();
 

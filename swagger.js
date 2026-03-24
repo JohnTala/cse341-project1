@@ -5,8 +5,8 @@ const doc = {
     title: 'Contacts API',
     description: 'API documentation for the Contacts project'
   },
-  host: 'cse341-project1-1-4omy.onrender.com', // ✅ Your Render URL
-  schemes: ['https'],                            // ✅ HTTPS for Render
+  host: 'cse341-project1-1-4omy.onrender.com', // Your Render URL
+  schemes: ['https'],                            
   consumes: ['application/json'],
   produces: ['application/json']
 };
